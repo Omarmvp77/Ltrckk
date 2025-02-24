@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄 جاري التتبع...</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            let urlParams = new URLSearchParams(window.location.search);
+            let targetURL = urlParams.get("target");
+            let trackingID = urlParams.get("id");
+
+            if (!targetURL) {
+                document.body.innerHTML = "<h2>❌ خطأ: رابط غير صالح!</h2>";
+                return;
+            }
+
+            // تسجيل البيانات
+            let clickData = JSON.parse(localStorage.getItem("trackingData")) || [];
+
+            let newClick = {
+                id: trackingID,
+                time: new Date().toLocaleString(),
+                referrer: document.referrer || "غير متوفر",
+                userAgent: navigator.userAgent,
+                device: getDeviceType(),
+                country: "جاري التحميل..."
+            };
+
+            clickData.push(newClick);
+            localStorage.setItem("trackingData", JSON.stringify(clickData));
+
+            // جلب الدولة
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(async function (position) {
+                    try {
+                        const response = await fetch(`https://geocode.xyz/${position.coords.latitude},${position.coords.longitude}?geoit=json`);
+                        const data = await response.json();
+                        newClick.country = data.country || "غير معروف";
+                        localStorage.setItem("trackingData", JSON.stringify(clickData));
+                    } catch (error) {
+                        console.error("خطأ في جلب الدولة:", error);
+                    }
+                });
+            }
+
+            // إعادة التوجيه بعد تسجيل البيانات
+            setTimeout(() => {
+                window.location.href = targetURL;
+            }, 1000);
+        });
+
+        function getDeviceType() {
+            const userAgent = navigator.userAgent;
+            if (/Android/i.test(userAgent)) return "📱 Android";
+            if (/iPhone|iPad|iPod/i.test(userAgent)) return "📱 iOS";
+            if (/Windows/i.test(userAgent)) return "💻 Windows";
+            if (/Macintosh|Mac OS X/i.test(userAgent)) return "💻 MacOS";
+            return "🔍 غير معروف";
+        }
+    </script>
+</head>
+<body>
+    <h2>🔄 جاري إعادة التوجيه...</h2>
+</body>
+</html>
