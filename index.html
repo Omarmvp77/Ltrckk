@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 نظام تتبع النقرات</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1E3C72, #2A5298);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            margin: auto;
+        }
+
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+
+        input {
+            background: #fff;
+            color: #333;
+        }
+
+        button {
+            background: #FFDD57;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .tracking-link {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🔍 تتبع النقرات على الروابط</h1>
+        
+        <input type="url" id="original-link" placeholder="أدخل الرابط المراد تتبعه">
+        <button onclick="generateTrackingLink()">🎯 توليد رابط تتبع</button>
+
+        <h2>🔗 رابط التتبع:</h2>
+        <p class="tracking-link" id="tracking-link">لم يتم التوليد بعد</p>
+    </div>
+
+    <script>
+        function generateTrackingLink() {
+            let originalLink = document.getElementById("original-link").value;
+            if (!originalLink) {
+                alert("يرجى إدخال رابط صالح!");
+                return;
+            }
+
+            let trackingID = Date.now();  // توليد ID فريد
+            let trackingLink = window.location.origin + "/track.html?target=" + encodeURIComponent(originalLink) + "&id=" + trackingID;
+            
+            document.getElementById("tracking-link").innerHTML = `<a href="${trackingLink}" target="_blank">${trackingLink}</a>`;
+        }
+    </script>
+
+</body>
+</html>
